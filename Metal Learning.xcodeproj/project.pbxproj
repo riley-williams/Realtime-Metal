@@ -13,6 +13,8 @@
 		BF7D474C1CD9AFEA00CE02F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF7D474A1CD9AFEA00CE02F2 /* Main.storyboard */; };
 		BF7D47571CD9AFEA00CE02F2 /* Metal_LearningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D47561CD9AFEA00CE02F2 /* Metal_LearningTests.swift */; };
 		BF7D47621CD9AFEA00CE02F2 /* Metal_LearningUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D47611CD9AFEA00CE02F2 /* Metal_LearningUITests.swift */; };
+		BF7D47701CD9BA9900CE02F2 /* VideoProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D476F1CD9BA9900CE02F2 /* VideoProcessor.swift */; };
+		BFF9A8F41CD9DD4F0029408B /* ProcessedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF9A8F31CD9DD4F0029408B /* ProcessedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,8 @@
 		BF7D475D1CD9AFEA00CE02F2 /* Metal LearningUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Metal LearningUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF7D47611CD9AFEA00CE02F2 /* Metal_LearningUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metal_LearningUITests.swift; sourceTree = "<group>"; };
 		BF7D47631CD9AFEA00CE02F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF7D476F1CD9BA9900CE02F2 /* VideoProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoProcessor.swift; sourceTree = "<group>"; };
+		BFF9A8F31CD9DD4F0029408B /* ProcessedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProcessedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +101,8 @@
 			children = (
 				BF7D47441CD9AFEA00CE02F2 /* AppDelegate.swift */,
 				BF7D47461CD9AFEA00CE02F2 /* ViewController.swift */,
+				BF7D476F1CD9BA9900CE02F2 /* VideoProcessor.swift */,
+				BFF9A8F31CD9DD4F0029408B /* ProcessedView.swift */,
 				BF7D47481CD9AFEA00CE02F2 /* Assets.xcassets */,
 				BF7D474A1CD9AFEA00CE02F2 /* Main.storyboard */,
 				BF7D474D1CD9AFEA00CE02F2 /* Info.plist */,
@@ -252,8 +258,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF7D47701CD9BA9900CE02F2 /* VideoProcessor.swift in Sources */,
 				BF7D47471CD9AFEA00CE02F2 /* ViewController.swift in Sources */,
 				BF7D47451CD9AFEA00CE02F2 /* AppDelegate.swift in Sources */,
+				BFF9A8F41CD9DD4F0029408B /* ProcessedView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +483,7 @@
 				BF7D47681CD9AFEA00CE02F2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BF7D47691CD9AFEA00CE02F2 /* Build configuration list for PBXNativeTarget "Metal LearningTests" */ = {
 			isa = XCConfigurationList;
@@ -483,6 +492,7 @@
 				BF7D476B1CD9AFEA00CE02F2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BF7D476C1CD9AFEA00CE02F2 /* Build configuration list for PBXNativeTarget "Metal LearningUITests" */ = {
 			isa = XCConfigurationList;
@@ -491,6 +501,7 @@
 				BF7D476E1CD9AFEA00CE02F2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
