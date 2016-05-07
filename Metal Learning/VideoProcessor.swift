@@ -8,61 +8,102 @@
 
 import Cocoa
 import AVFoundation
+import Accelerate
+import MetalKit
 
-
-class VideoProcessor: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-	var recievedFrameCount:Int	= 0
-	var droppedFrameCount:Int	= 0
+class VideoProcessor: NSObject {
+	private let queue = dispatch_queue_create("video processor", DISPATCH_QUEUE_CONCURRENT)
+	var isInProgress:Bool = false
 	
-	var imageView:NSImageView?
+	var delegate:VideoProcessorDelegate?
+	let computeProcessor:MTCProcessor
 	
-	func captureOutput(captureOutput: AVCaptureOutput!, didDropSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-		droppedFrameCount += 1
-		NSLog("dropped frame")
+	var frameInfo:FrameInfo
+	var latestCameraData:NSMutableData?
+	
+	
+	init(frameInfo:FrameInfo) {
+		self.frameInfo = frameInfo
+		
+		//initialize with a Metal compute kernel function
+		computeProcessor = MTCProcessor(metalSourceFile: "edge", numResources: 3)
 	}
 	
-	func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-		recievedFrameCount += 1
-		imageView?.image = imageFromSampleBuffer(sampleBuffer)
-		//imageView?.superview?.
+	func process() {
+		if !isInProgress {
+			isInProgress = true
+			dispatch_async(queue) {
+				self.processKernel()
+			}
+		}
 	}
 	
+	func processKernel() {
+		//remove old resources. optimally, I should reuse space in GPU memory
+		computeProcessor.clearResources()
+		
+		//provide MTC with the camera data. optimally, these should be passed as textures
+		let image = MTCResource(data: latestCameraData!, index: 0)
+		image.syncOnComputeCompletion = false
+		computeProcessor.addResource(buffer: image)
+		
+		var convMatrix:[Int32] = [-2, -1, 0, 1, 2];
+		let matData = NSMutableData(bytes: &convMatrix, length: convMatrix.count*sizeof(Int32))
+		let matrixResource = MTCResource(data: matData, index: 1)
+		computeProcessor.addResource(buffer: matrixResource)
+		
+		//this is a terrible solution...
+		let output = MTCResource(data: latestCameraData!, index: 2)
+		computeProcessor.addResource(buffer: output)
+		
+		//set the threadgroup/grid sizes
+		let tpg	= MTLSize(width: 53, height: 32, depth: 1)
+		let tpt = MTLSize(width: frameInfo.width/tpg.width, height: frameInfo.height/tpg.height, depth: 1)
+		computeProcessor.setGridParameters(threadsPerThreadgroup: tpt, threadgroupsPerGrid: tpg)
+		
+		//begin computation
+		computeProcessor.compute()
+		
+		
+		let processedFrame = Frame(data: output.data, info: frameInfo)
+		
+		
+		isInProgress = false
+		dispatch_async(dispatch_get_main_queue()) {
+			self.delegate?.didFinishProcessingFrame(processedFrame)
+		}
+	}
 	
-	func imageFromSampleBuffer(sampleBuffer:CMSampleBuffer) -> NSImage {
-		
-		// Get a CMSampleBuffer's Core Video image buffer for the media data
-		let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
-		// Lock the base address of the pixel buffer
-		CVPixelBufferLockBaseAddress(imageBuffer, 0)
-		
-		// Get the number of bytes per row for the pixel buffer
-		let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
-		
-		// Get the number of bytes per row for the pixel buffer
-		let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
-		// Get the pixel buffer width and height
-		let width = CVPixelBufferGetWidth(imageBuffer)
-		let height = CVPixelBufferGetHeight(imageBuffer)
-		
-		// Create a device-dependent RGB color space
-		let colorSpace = CGColorSpaceCreateDeviceRGB()
-		
-		//let context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, )
-		
-		let info = CGBitmapInfo.ByteOrder32Little.rawValue | CGImageAlphaInfo.PremultipliedFirst.rawValue
-		
-		// Create a bitmap graphics context with the sample buffer data
-		let context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, info)
-		
-		// Create a Quartz image from the pixel data in the bitmap graphics context
-		let quartzImage = CGBitmapContextCreateImage(context)
-		// Unlock the pixel buffer
-		
-		CVPixelBufferUnlockBaseAddress(imageBuffer,0)
+	func recievedNewFrame(data d:NSMutableData) {
+		latestCameraData = d
+		process()
+	}
+	
+}
 
+protocol VideoProcessorDelegate {
+	func didFinishProcessingFrame(frame:Frame)
+}
+
+class Frame {
+	var data:NSMutableData
+	var info:FrameInfo
 	
-		// Create an image object from the Quartz image
-		let image = NSImage(CGImage: quartzImage!, size: NSSize(width: width, height: height))
-		return image
+	init(data:NSMutableData, info:FrameInfo) {
+		self.data = data
+		self.info = info
+	}
+}
+
+struct FrameInfo {
+	var width:Int
+	var height:Int
+	var bytesPerPixel:Int
+	
+	func byteWidth() -> Int {
+		return width*bytesPerPixel
+	}
+	func byteSize() -> Int {
+		return byteWidth()*height
 	}
 }

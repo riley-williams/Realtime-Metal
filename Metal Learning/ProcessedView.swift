@@ -9,71 +9,38 @@
 import Cocoa
 import AVFoundation
 
-class ProcessedView: NSView, AVCaptureVideoDataOutputSampleBufferDelegate {
+class ProcessedView: NSView {
+	private let colorSpace = CGColorSpaceCreateDeviceRGB()
+	private let byteOrdering = CGBitmapInfo.ByteOrder32Little.rawValue | CGImageAlphaInfo.PremultipliedFirst.rawValue
 	
-	var currentBuffer:CVImageBuffer?
+	var processedFrame:Frame?
 	
-	let colorSpace = CGColorSpaceCreateDeviceRGB()
-	let info = CGBitmapInfo.ByteOrder32Little.rawValue | CGImageAlphaInfo.PremultipliedFirst.rawValue
-
-
+	var q:NSTimeInterval = 0
+	
 	override func drawRect(dirtyRect: NSRect) {
 		super.drawRect(dirtyRect)
 		
 		let context = NSGraphicsContext.currentContext()?.CGContext
 		
-		
 		//layer?.backgroundColor = CGColorCreateGenericRGB(0.5, 0.5, 0.5, 1.0)
 		
-		if let imageBuffer = currentBuffer {
-			let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
-			let width = CVPixelBufferGetWidth(imageBuffer)
-			let height = CVPixelBufferGetHeight(imageBuffer)
-			
-			CVPixelBufferLockBaseAddress(imageBuffer, 0)
-			let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
-			let pixels = NSMutableData(bytes: baseAddress, length: CVPixelBufferGetDataSize(imageBuffer))
-			CVPixelBufferUnlockBaseAddress(imageBuffer, 0)
-
-			
-			//perform operations on pixels.
-			//TODO: change to async Metal kernel
-			
-			
-			for y in 0..<height {
-				for x in 0..<width {
-					let offset = 1+x*4+y*bytesPerRow
-					pixels.resetBytesInRange(NSRange(location: offset, length: 1))
-				}
-			}
-			
-			
-			
+		if processedFrame != nil {
+			let info = processedFrame!.info
 			//render the image to the context
-			let bitmapContext = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, bytesPerRow, colorSpace, info)!
-			
+			let bytes = processedFrame!.data.mutableCopy()
+			let bitmapContext = CGBitmapContextCreate(bytes.mutableBytes, info.width, info.height, 8, info.byteWidth(), colorSpace, byteOrdering)!
 			let image = CGBitmapContextCreateImage(bitmapContext)
-			CGContextDrawImage(context, CGRect(origin: CGPoint(x: 0,y: 0), size: CGSize(width: bounds.width, height: bounds.height))
-				, image)
+			CGContextDrawImage(context, NSRectToCGRect(bounds), image)
 			
+			let t = NSDate.timeIntervalSinceReferenceDate()
 			
-			currentBuffer = nil
+			NSLog("\(t-q)")
+			
+			q = t
+			processedFrame = nil
 		}
 		
-		
 	}
 	
-	
-	func captureOutput(captureOutput: AVCaptureOutput!, didDropSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-		NSLog("dropped frame")
-	}
-	
-	func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-		currentBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-		//display on main thread
-		dispatch_async(dispatch_get_main_queue()) {
-			self.display()
-		}
-	}
 	
 }

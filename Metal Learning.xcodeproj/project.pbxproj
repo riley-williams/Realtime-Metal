@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF2749AD1CDAB55D004BBDC2 /* Kernels.metal in Sources */ = {isa = PBXBuildFile; fileRef = BF2749AC1CDAB55D004BBDC2 /* Kernels.metal */; };
+		BF73C37F1CDCFDAF0069D0FD /* MTCResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF73C37E1CDCFDAF0069D0FD /* MTCResource.swift */; };
+		BF73C3811CDCFDBA0069D0FD /* MTCProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF73C3801CDCFDBA0069D0FD /* MTCProcessor.swift */; };
 		BF7D47451CD9AFEA00CE02F2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D47441CD9AFEA00CE02F2 /* AppDelegate.swift */; };
 		BF7D47471CD9AFEA00CE02F2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D47461CD9AFEA00CE02F2 /* ViewController.swift */; };
 		BF7D47491CD9AFEA00CE02F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF7D47481CD9AFEA00CE02F2 /* Assets.xcassets */; };
@@ -35,6 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BF2749AC1CDAB55D004BBDC2 /* Kernels.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Kernels.metal; path = ../Kernels.metal; sourceTree = "<group>"; };
+		BF73C37E1CDCFDAF0069D0FD /* MTCResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTCResource.swift; sourceTree = "<group>"; };
+		BF73C3801CDCFDBA0069D0FD /* MTCProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTCProcessor.swift; sourceTree = "<group>"; };
 		BF7D47411CD9AFEA00CE02F2 /* Metal Learning.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Metal Learning.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF7D47441CD9AFEA00CE02F2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BF7D47461CD9AFEA00CE02F2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -101,8 +107,10 @@
 			children = (
 				BF7D47441CD9AFEA00CE02F2 /* AppDelegate.swift */,
 				BF7D47461CD9AFEA00CE02F2 /* ViewController.swift */,
-				BF7D476F1CD9BA9900CE02F2 /* VideoProcessor.swift */,
 				BFF9A8F31CD9DD4F0029408B /* ProcessedView.swift */,
+				BFE978521CDDE56000AB05DC /* Metal Wrapper Classes */,
+				BF7D476F1CD9BA9900CE02F2 /* VideoProcessor.swift */,
+				BF2749AC1CDAB55D004BBDC2 /* Kernels.metal */,
 				BF7D47481CD9AFEA00CE02F2 /* Assets.xcassets */,
 				BF7D474A1CD9AFEA00CE02F2 /* Main.storyboard */,
 				BF7D474D1CD9AFEA00CE02F2 /* Info.plist */,
@@ -126,6 +134,15 @@
 				BF7D47631CD9AFEA00CE02F2 /* Info.plist */,
 			);
 			path = "Metal LearningUITests";
+			sourceTree = "<group>";
+		};
+		BFE978521CDDE56000AB05DC /* Metal Wrapper Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BF73C37E1CDCFDAF0069D0FD /* MTCResource.swift */,
+				BF73C3801CDCFDBA0069D0FD /* MTCProcessor.swift */,
+			);
+			name = "Metal Wrapper Classes";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,10 +275,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF73C37F1CDCFDAF0069D0FD /* MTCResource.swift in Sources */,
 				BF7D47701CD9BA9900CE02F2 /* VideoProcessor.swift in Sources */,
 				BF7D47471CD9AFEA00CE02F2 /* ViewController.swift in Sources */,
 				BF7D47451CD9AFEA00CE02F2 /* AppDelegate.swift in Sources */,
+				BF2749AD1CDAB55D004BBDC2 /* Kernels.metal in Sources */,
 				BFF9A8F41CD9DD4F0029408B /* ProcessedView.swift in Sources */,
+				BF73C3811CDCFDBA0069D0FD /* MTCProcessor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
