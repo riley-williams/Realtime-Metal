@@ -34,7 +34,7 @@ class ProcessedView: NSView {
 			
 			let t = NSDate.timeIntervalSinceReferenceDate()
 			
-			NSLog("\(t-q)")
+			NSLog("\(Int(1/(t-q)))")
 			
 			q = t
 			processedFrame = nil
