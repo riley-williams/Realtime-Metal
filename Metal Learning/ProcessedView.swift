@@ -30,8 +30,6 @@ class ProcessedView: NSView {
 			let bitmapContext = CGBitmapContextCreate(bytes.mutableBytes, info.width, info.height, 8, info.byteWidth(), colorSpace, byteOrdering)!
 			let image = CGBitmapContextCreateImage(bitmapContext)
 			CGContextDrawImage(context, NSRectToCGRect(bounds), image)
-			
-			processedFrame = nil
 		}
 		
 	}

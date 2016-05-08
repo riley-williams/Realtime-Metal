@@ -48,18 +48,18 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
 			output.setSampleBufferDelegate(self, queue: queue)
 			
 			session.addOutput(output)
-			
+			try! device.lockForConfiguration()
 			
 			//create a preview layer and set it as the preview's layer
 			let previewLayer = AVCaptureVideoPreviewLayer(session: session)
-			previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+			previewLayer.videoGravity = AVLayerVideoGravityResize
 			previewLayer.frame = previewView.bounds
 			previewView.layer = previewLayer
 			
 			let dimensions = CMVideoFormatDescriptionGetDimensions(device.activeFormat.formatDescription)
 			let width  = Int(dimensions.width)
 			let height = Int(dimensions.height)
-			
+			print(dimensions)
 			let info = FrameInfo(width: width, height: height, bytesPerPixel: 4)
 			processor = VideoProcessor(frameInfo: info)
 			
@@ -67,6 +67,10 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
 			
 			//start capturing camera data
 			session.startRunning()
+			
+			let aspectRatio = CGFloat(width)/CGFloat(height)
+			let aspectRatioConstraint = NSLayoutConstraint(item: previewView, attribute: .Width, relatedBy: .Equal, toItem: previewView, attribute: .Height, multiplier: aspectRatio, constant: 0)
+			self.view.addConstraint(aspectRatioConstraint)
 			
 		} else {
 			NSLog("Error loading camera")
@@ -109,15 +113,13 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
 	
 	
 	func didFinishProcessingFrame(frame: Frame) {
-		if self.processedView.processedFrame == nil {
-			self.processedView.processedFrame = frame
-			self.processedView.display()
-			let t = NSDate.timeIntervalSinceReferenceDate()
-			
-			self.fpsLabel.stringValue = NSString(format:"fps: %.1f", 1/(t-q)) as String
-			
-			q = t
-		}
+		self.processedView.processedFrame = frame
+		self.processedView.display()
+		let t = NSDate.timeIntervalSinceReferenceDate()
+		
+		self.fpsLabel.stringValue = NSString(format:"fps: %.1f", 1/(t-q)) as String
+		
+		q = t
 	}
 	
 }
