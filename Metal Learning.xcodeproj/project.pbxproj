@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BF2749AD1CDAB55D004BBDC2 /* Kernels.metal in Sources */ = {isa = PBXBuildFile; fileRef = BF2749AC1CDAB55D004BBDC2 /* Kernels.metal */; };
+		BF500AA71CDF6CF300312A97 /* Kernels.metal in Sources */ = {isa = PBXBuildFile; fileRef = BF500AA61CDF6CF300312A97 /* Kernels.metal */; };
 		BF73C37F1CDCFDAF0069D0FD /* MTCResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF73C37E1CDCFDAF0069D0FD /* MTCResource.swift */; };
 		BF73C3811CDCFDBA0069D0FD /* MTCProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF73C3801CDCFDBA0069D0FD /* MTCProcessor.swift */; };
 		BF7D47451CD9AFEA00CE02F2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D47441CD9AFEA00CE02F2 /* AppDelegate.swift */; };
@@ -38,7 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		BF2749AC1CDAB55D004BBDC2 /* Kernels.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Kernels.metal; path = ../Kernels.metal; sourceTree = "<group>"; };
+		BF500AA61CDF6CF300312A97 /* Kernels.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Kernels.metal; sourceTree = "<group>"; };
 		BF73C37E1CDCFDAF0069D0FD /* MTCResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTCResource.swift; sourceTree = "<group>"; };
 		BF73C3801CDCFDBA0069D0FD /* MTCProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTCProcessor.swift; sourceTree = "<group>"; };
 		BF7D47411CD9AFEA00CE02F2 /* Metal Learning.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Metal Learning.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -110,7 +110,7 @@
 				BFF9A8F31CD9DD4F0029408B /* ProcessedView.swift */,
 				BFE978521CDDE56000AB05DC /* Metal Wrapper Classes */,
 				BF7D476F1CD9BA9900CE02F2 /* VideoProcessor.swift */,
-				BF2749AC1CDAB55D004BBDC2 /* Kernels.metal */,
+				BF500AA61CDF6CF300312A97 /* Kernels.metal */,
 				BF7D47481CD9AFEA00CE02F2 /* Assets.xcassets */,
 				BF7D474A1CD9AFEA00CE02F2 /* Main.storyboard */,
 				BF7D474D1CD9AFEA00CE02F2 /* Info.plist */,
@@ -279,8 +279,8 @@
 				BF7D47701CD9BA9900CE02F2 /* VideoProcessor.swift in Sources */,
 				BF7D47471CD9AFEA00CE02F2 /* ViewController.swift in Sources */,
 				BF7D47451CD9AFEA00CE02F2 /* AppDelegate.swift in Sources */,
-				BF2749AD1CDAB55D004BBDC2 /* Kernels.metal in Sources */,
 				BFF9A8F41CD9DD4F0029408B /* ProcessedView.swift in Sources */,
+				BF500AA71CDF6CF300312A97 /* Kernels.metal in Sources */,
 				BF73C3811CDCFDBA0069D0FD /* MTCProcessor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
