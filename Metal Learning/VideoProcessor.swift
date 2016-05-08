@@ -18,7 +18,7 @@ class VideoProcessor: NSObject {
 	var delegate:VideoProcessorDelegate?
 	let computeProcessor:MTCProcessor
 	
-	var frameInfo:FrameInfo
+	var frameInfo:FrameInfo //contains the size of frames provided by the camera
 	var latestCameraData:NSMutableData?
 	
 	
@@ -56,8 +56,11 @@ class VideoProcessor: NSObject {
 		let output = MTCResource(data: latestCameraData!, index: 2)
 		computeProcessor.addResource(buffer: output)
 		
+		//calculate integer divisors of the video dimensions under 128
+		let groupWidth  = gcd(frameInfo.width,  max: 128)
+		let groupHeight = gcd(frameInfo.height, max: 128)
 		//set the threadgroup/grid sizes
-		let tpg	= MTLSize(width: 53, height: 32, depth: 1)
+		let tpg	= MTLSize(width: groupWidth, height: groupHeight, depth: 1)
 		let tpt = MTLSize(width: frameInfo.width/tpg.width, height: frameInfo.height/tpg.height, depth: 1)
 		computeProcessor.setGridParameters(threadsPerThreadgroup: tpt, threadgroupsPerGrid: tpg)
 		
@@ -79,6 +82,21 @@ class VideoProcessor: NSObject {
 		process()
 	}
 	
+	
+	func gcd(x:Int, max:Int) -> Int {
+		var gcd = 1
+		var end = Int(x/2)
+		if max < end {
+			end = max
+		}
+		for i in 2...end {
+			if x%i == 0 {
+				gcd = i
+			}
+		}
+		
+		return gcd
+	}
 }
 
 protocol VideoProcessorDelegate {

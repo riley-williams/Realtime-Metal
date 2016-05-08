@@ -31,7 +31,6 @@ test(const	device	uchar	*im_a		[[ buffer(0) ]],
 kernel void
 edge(const	device	uchar4	*image		[[ buffer(0) ]],
 	 const	device	int		*kern		[[ buffer(1) ]],
-	 const	device	int
 			device	uchar4	*im_out		[[ buffer(2) ]],
 					uint2	pos			[[ thread_position_in_grid ]],
 					uint2	dim			[[ threads_per_grid ]]) {

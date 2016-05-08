@@ -46,8 +46,10 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
 			previewLayer.frame = previewView.bounds
 			previewView.layer = previewLayer
 			
-			let width  = 848
-			let height = 480
+			let dimensions = CMVideoFormatDescriptionGetDimensions(device.activeFormat.formatDescription)
+			let width  = Int(dimensions.width)
+			let height = Int(dimensions.height)
+			
 			let info = FrameInfo(width: width, height: height, bytesPerPixel: 4)
 			processor = VideoProcessor(frameInfo: info)
 			
