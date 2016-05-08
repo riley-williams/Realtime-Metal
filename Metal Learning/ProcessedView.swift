@@ -15,7 +15,6 @@ class ProcessedView: NSView {
 	
 	var processedFrame:Frame?
 	
-	var q:NSTimeInterval = 0
 	
 	override func drawRect(dirtyRect: NSRect) {
 		super.drawRect(dirtyRect)
@@ -32,11 +31,6 @@ class ProcessedView: NSView {
 			let image = CGBitmapContextCreateImage(bitmapContext)
 			CGContextDrawImage(context, NSRectToCGRect(bounds), image)
 			
-			let t = NSDate.timeIntervalSinceReferenceDate()
-			
-			NSLog("\(Int(1/(t-q)))")
-			
-			q = t
 			processedFrame = nil
 		}
 		

@@ -11,20 +11,29 @@ import AVFoundation
 import Accelerate
 import MetalKit
 
+struct edgeDetectionProperties {
+	var size:Int16			= 3
+	var multiplier:Float32	= 1
+	var shouldOverlay:Bool	= true
+}
+
 class VideoProcessor: NSObject {
 	private let queue = dispatch_queue_create("video processor", DISPATCH_QUEUE_CONCURRENT)
 	var isInProgress:Bool = false
 	
 	var delegate:VideoProcessorDelegate?
 	let computeProcessor:MTCProcessor
+	var properties:edgeDetectionProperties
 	
 	var frameInfo:FrameInfo //contains the size of frames provided by the camera
 	var latestCameraData:NSMutableData?
+	var lastCameraData:NSMutableData?
+	
 	
 	
 	init(frameInfo:FrameInfo) {
 		self.frameInfo = frameInfo
-		
+		properties = edgeDetectionProperties()
 		//initialize with a Metal compute kernel function
 		computeProcessor = MTCProcessor(metalSourceFile: "edge", numResources: 3)
 	}
@@ -39,6 +48,7 @@ class VideoProcessor: NSObject {
 	}
 	
 	func processKernel() {
+		isInProgress = true
 		//remove old resources. optimally, I should reuse space in GPU memory
 		computeProcessor.clearResources()
 		
@@ -47,7 +57,7 @@ class VideoProcessor: NSObject {
 		image.syncOnComputeCompletion = false
 		computeProcessor.addResource(buffer: image)
 		
-		var convMatrix:[Int32] = [-2, -1, 0, 1, 2];
+		var convMatrix:[Int32] = [-1, 0, 1];
 		let matData = NSMutableData(bytes: &convMatrix, length: convMatrix.count*sizeof(Int32))
 		let matrixResource = MTCResource(data: matData, index: 1)
 		computeProcessor.addResource(buffer: matrixResource)
@@ -55,6 +65,10 @@ class VideoProcessor: NSObject {
 		//this is a terrible solution...
 		let output = MTCResource(data: latestCameraData!, index: 2)
 		computeProcessor.addResource(buffer: output)
+		
+		let propData = NSMutableData(bytes: &properties, length: sizeof(edgeDetectionProperties))
+		let propResource = MTCResource(data: propData, index: 3)
+		computeProcessor.addResource(buffer: propResource)
 		
 		//calculate integer divisors of the video dimensions under 128
 		let groupWidth  = gcd(frameInfo.width,  max: 128)
@@ -71,15 +85,18 @@ class VideoProcessor: NSObject {
 		let processedFrame = Frame(data: output.data, info: frameInfo)
 		
 		
-		isInProgress = false
 		dispatch_async(dispatch_get_main_queue()) {
 			self.delegate?.didFinishProcessingFrame(processedFrame)
 		}
+		isInProgress = false
 	}
 	
 	func recievedNewFrame(data d:NSMutableData) {
-		latestCameraData = d
-		process()
+		if !isInProgress {
+			lastCameraData = latestCameraData
+			latestCameraData = d
+			process()
+		}
 	}
 	
 	

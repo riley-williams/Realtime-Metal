@@ -12,9 +12,19 @@ import AVFoundation
 class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDelegate, VideoProcessorDelegate {
 	var session = AVCaptureSession()
 	var processor:VideoProcessor?
+	var q:NSTimeInterval = 0
 	
 	@IBOutlet weak var previewView: NSView!
 	@IBOutlet weak var processedView: ProcessedView!
+	
+	
+	@IBOutlet weak var filterSizeLabel: NSTextField!
+	@IBOutlet weak var mixLabel: NSTextField!
+	@IBOutlet weak var fpsLabel: NSTextField!
+	
+	@IBOutlet weak var filterSizeSlider: NSSlider!
+	@IBOutlet weak var multiplierSlider: NSSlider!
+	@IBOutlet weak var shouldOverlaySourceButton: NSButton!
 	
 	
 	override func viewDidLoad() {
@@ -79,6 +89,19 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
 			let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
 			let data = NSMutableData(bytes: baseAddress, length: CVPixelBufferGetDataSize(imageBuffer))
 			CVPixelBufferUnlockBaseAddress(imageBuffer, 0)
+			
+			let filterSizeValue = filterSizeSlider.intValue
+			processor?.properties.size = Int16(filterSizeValue)
+			let multiplierValue = multiplierSlider.floatValue
+			processor?.properties.multiplier = multiplierValue
+			let shouldOverlaySource = shouldOverlaySourceButton.state
+			processor?.properties.shouldOverlay = Bool(shouldOverlaySource)
+			
+			dispatch_async(dispatch_get_main_queue()) {
+				self.filterSizeLabel.stringValue = "Filter Size: \(filterSizeValue)"
+				self.mixLabel.stringValue = NSString(format:"Multiplier: %.2f", multiplierValue) as String
+			}
+			
 			//give frame to video processor
 			processor?.recievedNewFrame(data: data)
 		}
@@ -89,6 +112,11 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
 		if self.processedView.processedFrame == nil {
 			self.processedView.processedFrame = frame
 			self.processedView.display()
+			let t = NSDate.timeIntervalSinceReferenceDate()
+			
+			self.fpsLabel.stringValue = NSString(format:"fps: %.1f", 1/(t-q)) as String
+			
+			q = t
 		}
 	}
 	
